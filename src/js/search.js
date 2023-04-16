@@ -1,73 +1,51 @@
-import api from './api/api-service';
-import searchRender from './render/render-search';
-import { dataCombine, getGenres } from './data/data-combine';
-import { defineResultsPerPage, secret } from './components/pagination';
 
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
-import { errorModal, showEastereggs } from './components/notify';
-// import showConfetti from './components/confetti';
+//pozniej komentarze zmienie na angielski
 
-import { formRef, inputRef, headerWarning } from './references/refs';
+//zalozenia : w HTML wystepuje: <search-input> do wpisania slowa kluczowego, najlepiej od razu z placeholderem o treści "search for a movie";<search-button> przycisk do wyszukiwania ; <movies-container> do wyswietlania znalezionych filmow 
 
-// DOM
-let btns = document.querySelectorAll('.pagination-button');
-const btn1Ref = document.querySelector('[data-index="1"]');
+const API_KEY = '3453ae595a5d53cbc877c6d05de8a002'; // mój klucz API z themoviedb.org
+const BASE_URL = 'https://api.themoviedb.org/3';
 
-// Listener
-formRef.addEventListener('submit', searchingHandler);
-
-// Searching function
-function searchingHandler(event) {
-  event.preventDefault();
-
-  const page = 1;
-  btns.forEach(el => el.classList.remove('pagination--current'));
-  btn1Ref.classList.add('pagination--current');
-
-  const inputedText = inputRef.value.replace(/\s+/g, ' ').trim();
-
-  if (inputedText.length <= 1) {
-    return (headerWarning.textContent =
-      'No matches found for your query. Enter the correct movie name.');
-  }
-
-//   if (inputedText === secret.r || inputedText === secret.e) {
-//     showConfetti();
-//     showEastereggs();
-//   }
-
-  NProgress.start();
-  headerWarning.textContent = '';
-  movieSearcher(inputedText, page);
-  NProgress.done();
-}
-
-// Search fetch
-async function movieSearcher(searchText, pageNumber) {
+// funkcja wyszukująca filmy według słowa kluczowego
+async function searchMovies(query) {
   try {
-    const data = await api.fetchMovieSearcher(searchText, pageNumber);
-
-    const result = data.results;
-
-    const allGenres = getGenres();
-    const fullSearchData = dataCombine(result, allGenres);
-    const size = defineResultsPerPage();
-
-    if (result.length === 0) {
-      return (headerWarning.textContent =
-        'No matches found for your query. Enter the correct movie name.');
-    }
-
-    searchRender(cutItems(fullSearchData, size));
+    const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`);
+    const data = await response.json();
+    return data.results;
   } catch (error) {
-    errorModal();
-    console.error('Smth wrong with search form fetch' + error);
+    console.error(error);
   }
 }
 
-function cutItems(array, number) {
-  return array.slice(0, number);
+// funkcja wyświetlająca filmy na stronie , do podmiany/korekty/ dostosowania z FT07 -Zaimplementować przesyłanie popularnych filmów na główną (pierwszą) stronę
+
+function displayMovies(movies) {
+  const moviesContainer = document.getElementById('movies-container');
+  moviesContainer.innerHTML = '';
+  movies.forEach((movie) => {
+    const movieCard = `
+      <div class="movie-card">
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+        <h2>${movie.title}</h2>
+        <p>${movie.release_date}</p>
+        <p>${movie.overview}</p>
+      </div>
+    `;
+    moviesContainer.insertAdjacentHTML('beforeend', movieCard);
+  });
 }
 
-export { movieSearcher };
+// funkcja obsługująca wyszukiwanie po kliknięciu przycisku, do weryfikacji nazwy przycisku jak bedzie html
+
+async function handleSearch(event) {
+  event.preventDefault();
+  const searchInput = document.getElementById('search-input');
+  const query = searchInput.value;
+  if (!query) return;
+  const movies = await searchMovies(query);
+  displayMovies(movies);
+}
+
+// nasłuchiwanie na kliknięcie buttona "Search"
+const searchButton = document.getElementById('search-button');
+searchButton.addEventListener('click', handleSearch);
