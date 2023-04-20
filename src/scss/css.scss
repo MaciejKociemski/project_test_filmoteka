@@ -14,6 +14,8 @@ header {
 
 h1 {
   margin-bottom: 1rem;
+  text-align: center;
+  color: white;
 }
 
 form {
@@ -85,3 +87,36 @@ main {
   margin-bottom: 0.5rem;
   line-height: 1.5;
 }
+
+
+.header {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  background-clip: padding-box;
+  background-position: center;
+  background-color: black;
+  background-image: url('../images/main-background-mobile.png');
+//   @include mobile-retina {
+//     background-image: $header-overlay, url('../images/main-background-mobile@2x.png');
+//   }
+//   @include tablet {
+//     background-image: $header-overlay, url('../images/main-background-tablet.png');
+//   }
+//   @include tablet-retina {
+//     background-image: $header-overlay, url('../images/main-background-tablet@2x.png');
+  }
+//   @include desktop {
+//     background-image: url('../images/main-background-desktop.png');}
+// //   
+//   @include desktop-retina {
+//     background-image: $header-overlay, url('../images/main-background-desktop@2x.png');
+//   }
+.notification-alert{width: 394px;
+    margin: 0 auto;
+    font-size: 14px;
+    line-height: 1.17;
+    font-weight: 400;
+    color: #ff001b;}
+
+    

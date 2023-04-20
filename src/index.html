@@ -5,18 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Library</title>
     <link rel="stylesheet" href="./scss/css.css" />
+    
   </head>
   <body>
     <header>
+      <div class="header">
       <h1>Movie Library</h1>
       <form>
         <label for="search-input">Search movies:</label>
-        <input type="text" id="search-input" placeholder="Enter movie title" />
-        <button id="search-button">Search</button>
+        <input type="text" class="search-form--input" placeholder="Enter a movie title" />
+        <button class="search-form--button">Search</button>
       </form>
+     <p class="notification-alert"></p>
+    </div>
+      
     </header>
     <main>
-      <div id="movies-container"></div>
+      <div id="movies-gallery"></div>
     </main>
     <script src="./js/search.js"></script>
   </body>
